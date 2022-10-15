@@ -84,7 +84,7 @@ class LocalSearchBot(Bot):
     
     def objective_function(self, state: GameState):
         f = 0
-        chain, loop = self.get_num_chain_loop(state)
+        # chain, loop = self.get_num_chain_loop(state)
         # if (loop != 0 and chain == 0):
         #     f = 0
         # else:
@@ -92,6 +92,8 @@ class LocalSearchBot(Bot):
         #         f = 1
         #     else:
         #         f = -1
+        
+        # f*=chain
 
         #playerModifier
         if state.player1_turn:

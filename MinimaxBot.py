@@ -103,7 +103,7 @@ class MinimaxBot(Bot):
         #         else:
         #             f = -1
         #playerModifier
-        if (state.player1_turn==self.bot_code):
+        if (self.bot_code):
             mult = -1
         else:
             mult = 1
@@ -176,6 +176,7 @@ class MinimaxBot(Bot):
                     print("player1_turn: ",state.player1_turn)
                     print("row_status:\n",state_copy.row_status)
                     print("col_status:\n",state_copy.col_status)
+                    print("board_status:\n",state_copy.board_status)
                     #state_copy.player1_turn=next_turn
                     value,_ = self.minimax(state_copy,next_turn==self.bot_code,alpha,beta,depth+1)
                     print("value: ",value)
@@ -194,6 +195,7 @@ class MinimaxBot(Bot):
                     print("player1_turn: ",state.player1_turn)
                     print("row_status:\n",state_copy.row_status)
                     print("col_status:\n",state_copy.col_status)
+                    print("board_status:\n",state_copy.board_status)
                     #state_copy.player1_turn=next_turn
                     value,_ = self.minimax(state_copy,next_turn==self.bot_code,alpha,beta,depth+1)
                     print("value: ",value)
@@ -218,6 +220,7 @@ class MinimaxBot(Bot):
                     print("player1_turn: ",state.player1_turn)
                     print("row_status:\n",state_copy.row_status)
                     print("col_status:\n",state_copy.col_status)
+                    print("board_status:\n",state_copy.board_status)
                     #state_copy.player1_turn=next_turn
                     value,_ = self.minimax(state_copy,next_turn==self.bot_code,alpha,beta,depth+1)
                     print("value: ",value)
@@ -234,6 +237,7 @@ class MinimaxBot(Bot):
                     print("player1_turn: ",state.player1_turn)
                     print("row_status:\n",state_copy.row_status)
                     print("col_status:\n",state_copy.col_status)
+                    print("board_status:\n",state_copy.board_status)
                     #state_copy.player1_turn=next_turn
                     value,_ = self.minimax(state_copy,next_turn==self.bot_code,alpha,beta,depth+1)
                     print("value: ",value)

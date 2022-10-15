@@ -140,7 +140,7 @@ class Dots_and_Boxes():
 
         if type == 'row':
             if (self.player1_turn):
-                self.row_status[y][x] = -1
+                self.row_status[y][x] = 1
             elif (not self.player1_turn):
                 self.row_status[y][x] = 1
             if y >= 1:
@@ -310,6 +310,7 @@ class Dots_and_Boxes():
             self.pointsScored = False
 
             if self.is_gameover():
+                input()
                 # self.canvas.delete("all")
                 self.display_gameover()
                 self.window.bind(LEFT_CLICK, self.click)
@@ -318,8 +319,6 @@ class Dots_and_Boxes():
                 self.turn()
 
     def turn(self):
-        input()
-
         current_bot = self.bot1 if self.player1_turn else self.bot2
         if current_bot is None:
             self.window.bind(LEFT_CLICK, self.click)
@@ -345,5 +344,5 @@ if __name__ == "__main__":
     PvB mode: game_instance = Dots_and_Boxes(None, BotName()) or game_instance = Dots_and_Boxes(BotName(), None)
     BvB mode: game_instance = Dots_and_Boxes(BotName(), BotName())
     """
-    game_instance = Dots_and_Boxes(LocalSearchBot(), MinimaxBot())
+    game_instance = Dots_and_Boxes(None,MinimaxBot())
     game_instance.mainloop()
