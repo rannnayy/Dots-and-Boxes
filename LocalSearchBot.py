@@ -4,8 +4,11 @@ from GameAction import GameAction
 from GameState import GameState
 import random
 import numpy as np
+from copy import deepcopy
 
 class LocalSearchBot(Bot):
+    num_of_square = 4
+
     def get_action(self, state: GameState) -> GameAction:
         all_row_marked = np.argwhere(state.row_status != 0)
         all_col_marked = np.argwhere(state.col_status != 0)
@@ -36,6 +39,7 @@ class LocalSearchBot(Bot):
             is_loop = False
             loc_zero = np.argwhere(temp == 0)[0]
             first_el_chain = loc_zero
+            
             # print(loc_zero)
             count_len_chain = 1
             if (len(loc_zero) != 0):
@@ -81,27 +85,22 @@ class LocalSearchBot(Bot):
     def objective_function(self, state: GameState):
         f = 0
         chain, loop = self.get_num_chain_loop(state)
-        if (loop != 0 and chain == 0):
-            f = 0
-        else:
-            if (chain % 2 == 1):
-                if (state.player1_turn):
-                    f = -1
-                else:
-                    f = 1
-            else:
-                if (state.player1_turn):
-                    f = 1
-                else:
-                    f = -1
+        # if (loop != 0 and chain == 0):
+        #     f = 0
+        # else:
+        #     if (chain % 2 == 0):
+        #         f = 1
+        #     else:
+        #         f = -1
+
         #playerModifier
         if state.player1_turn:
             mult = -1
         else:
             mult = 1
         sisi4 = np.argwhere(state.board_status == mult*4)
-        sisi3 = np.argwhere(state.board_status == mult*3)
-
+        sisi3 = np.argwhere(abs(state.board_status) == 3)
+        print(sisi4,sisi3)
         # Tidak ada terbentuk 4 sisi namun terbentuk 3 sisi
         if len(sisi4) == 0 and len(sisi3) > 0:
             f -= len(sisi3)
@@ -149,6 +148,45 @@ class LocalSearchBot(Bot):
         position = self.get_random_position_with_zero_value(state.col_status)
         return GameAction("col", position)
 
+    def get_next_turn(self, state : GameState, act : GameAction) -> tuple[bool,GameState]:
+        state_copy = deepcopy(state)
+        y = act.position[0]
+        x = act.position[1]
+        val = 1
+        playerModifier = 1
+        scored = False
+        if state.player1_turn:
+            playerModifier = -1
+
+        if act.action_type == 'row':
+            state_copy.row_status[y][x] = playerModifier
+        else :
+            state_copy.col_status[y][x] = playerModifier
+            
+
+        if y < (LocalSearchBot.num_of_square - 1) and x < (LocalSearchBot.num_of_square - 1):
+            state_copy.board_status[y][x] = (abs(state_copy.board_status[y][x]) + val) * playerModifier
+            if abs(state_copy.board_status[y][x]) == 4:
+                scored = True
+
+        if act.action_type == 'row':
+            state_copy.row_status[y][x] = 1
+            if y >= 1:
+                state_copy.board_status[y-1][x] = (abs(state_copy.board_status[y-1][x]) + val) * playerModifier
+                if abs(state_copy.board_status[y-1][x]) == 4:
+                    scored = True
+        elif act.action_type == 'col':
+            state_copy.col_status[y][x] = 1
+            if x >= 1:
+                state_copy.board_status[y][x-1] = (abs(state_copy.board_status[y][x-1]) + val) * playerModifier
+                if abs(state_copy.board_status[y][x-1]) == 4:
+                    scored = True
+        if scored :
+            return state_copy.player1_turn, state_copy
+        else:
+            #state_copy.player1_turn = not state_copy.player1_turn
+            return not state_copy.player1_turn, GameState(board_status=state_copy.board_status,row_status=state_copy.row_status,col_status=state_copy.col_status,player1_turn=not state_copy.player1_turn)#state_copy
+
     def get_action_local_search(self, state: GameState) -> GameAction:
         unmarked_row = np.argwhere(state.row_status == 0)
         unmarked_col = np.argwhere(state.col_status == 0)
@@ -157,34 +195,41 @@ class LocalSearchBot(Bot):
         best_coord = [0, 0]
         best_move = "no_bestmove"
 
-        best_f = self.objective_function(state)
+        # best_f = self.objective_function(state)
+        best_f = -999
         for x, y in unmarked_row:
-            temp_state = GameState(
-                state.board_status.copy(),
-                state.row_status.copy(),
-                state.col_status.copy(),
-                state.player1_turn
-            )
-            temp_state.row_status[x, y] = 1
-            f = self.objective_function(temp_state)
+            # temp_state = GameState(
+            #     state.board_status.copy(),
+            #     state.row_status.copy(),
+            #     state.col_status.copy(),
+            #     state.player1_turn
+            # )
+            next_turn, state_copy = self.get_next_turn(state, GameAction('row', (x,y)))
+            f = self.objective_function(state_copy)
             if (f > best_f):
                 best_f = f
                 best_coord = [x, y]
                 best_move = "row"
 
+            print(state_copy.board_status, f, "row", x,y)
+
         for x, y in unmarked_col:
-            temp_state = GameState(
-                state.board_status.copy(),
-                state.row_status.copy(),
-                state.col_status.copy(),
-                state.player1_turn
-            )
-            temp_state.col_status[x, y] = 1
-            f = self.objective_function(temp_state)
+            # temp_state = GameState(
+            #     state.board_status.copy(),
+            #     state.row_status.copy(),
+            #     state.col_status.copy(),
+            #     state.player1_turn
+            # )
+            # temp_state.col_status[x, y] = 1
+            next_turn, state_copy = self.get_next_turn(state, GameAction('col', (x,y)))
+            
+            f = self.objective_function(state_copy)
             if (f > best_f):
                 best_f = f
                 best_coord = [x, y]
                 best_move = "col"
+
+            print(state_copy.board_status, f, "col", x,y)
 
         if best_move == "no_bestmove":
             # Generate random move
