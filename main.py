@@ -310,6 +310,7 @@ class Dots_and_Boxes():
             self.pointsScored = False
 
             if self.is_gameover():
+                # YANG INI JANGAN LUPA DIUBAH YA JADI LANGSUNG SELESAI
                 input()
                 # self.canvas.delete("all")
                 self.display_gameover()

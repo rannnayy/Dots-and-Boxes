@@ -150,7 +150,7 @@ class LocalSearchBot(Bot):
         position = self.get_random_position_with_zero_value(state.col_status)
         return GameAction("col", position)
 
-    def get_next_turn(self, state : GameState, act : GameAction) -> tuple[bool,GameState]:
+    def get_next_turn(self, state : GameState, act : GameAction) -> (bool,GameState):
         state_copy = deepcopy(state)
         y = act.position[0]
         x = act.position[1]
