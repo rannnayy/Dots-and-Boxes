@@ -7,13 +7,15 @@ import numpy as np
 
 class LocalSearchBot(Bot):
     def get_action(self, state: GameState) -> GameAction:
-        all_row_marked = np.argwhere(state.row_status == 1)
-        all_col_marked = np.argwhere(state.col_status == 1)
+        all_row_marked = np.argwhere(state.row_status != 0)
+        all_col_marked = np.argwhere(state.col_status != 0)
 
         # Saat masih pertama, bebas mau generate row atau col
         if (len(all_row_marked) + len(all_col_marked) <= 1):
+            print("random")
             return self.get_random_action(state)
         else:
+            print("localsearch")
             return self.get_action_local_search(state)
 
     def get_num_chain_loop(self, state: GameState):
@@ -123,8 +125,8 @@ class LocalSearchBot(Bot):
         return (x, y)
 
     def get_random_action(self, state: GameState) -> GameAction:
-        all_row_marked = np.all(state.row_status == 1)
-        all_col_marked = np.all(state.col_status == 1)
+        all_row_marked = np.all(state.row_status != 0)
+        all_col_marked = np.all(state.col_status != 0)
 
         # Mengambil random move
         if not (all_row_marked or all_col_marked):
@@ -189,5 +191,5 @@ class LocalSearchBot(Bot):
             print("No bestmove")
             return self.get_random_action(state)
 
-        print("best move", best_move, best_coord)
-        return GameAction(best_move, (best_coord[0], best_coord[1]))
+        print("best move", best_move, [best_coord[1], best_coord[0]])
+        return GameAction(best_move, [best_coord[1], best_coord[0]])
