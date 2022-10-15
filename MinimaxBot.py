@@ -178,6 +178,7 @@ class MinimaxBot(Bot):
                     print("col_status:\n",state_copy.col_status)
                     #state_copy.player1_turn=next_turn
                     value,_ = self.minimax(state_copy,next_turn==self.bot_code,alpha,beta,depth+1)
+                    print("value: ",value)
                     if bestValue < value :
                         bestValue = value
                         bestStep = GameAction('row',(i,j))
@@ -195,6 +196,7 @@ class MinimaxBot(Bot):
                     print("col_status:\n",state_copy.col_status)
                     #state_copy.player1_turn=next_turn
                     value,_ = self.minimax(state_copy,next_turn==self.bot_code,alpha,beta,depth+1)
+                    print("value: ",value)
                     if bestValue < value :
                         bestValue = value
                         bestStep = GameAction('col',(i,j))
@@ -218,6 +220,7 @@ class MinimaxBot(Bot):
                     print("col_status:\n",state_copy.col_status)
                     #state_copy.player1_turn=next_turn
                     value,_ = self.minimax(state_copy,next_turn==self.bot_code,alpha,beta,depth+1)
+                    print("value: ",value)
                     if bestValue > value :
                         bestValue = value
                         bestStep = GameAction('row',(i,j))
@@ -233,6 +236,7 @@ class MinimaxBot(Bot):
                     print("col_status:\n",state_copy.col_status)
                     #state_copy.player1_turn=next_turn
                     value,_ = self.minimax(state_copy,next_turn==self.bot_code,alpha,beta,depth+1)
+                    print("value: ",value)
                     if bestValue > value :
                         bestValue = value
                         bestStep = GameAction('col',(i,j))
