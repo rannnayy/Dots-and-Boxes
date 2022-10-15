@@ -41,6 +41,8 @@ class Dots_and_Boxes():
         self.canvas = Canvas(self.window, width=size_of_board, height=size_of_board)
         self.canvas.pack()
         self.player1_starts = True
+        self.player1_win = False
+        self.draw = False
         self.refresh_board()
 
         self.bot1 = bot1
@@ -187,12 +189,14 @@ class Dots_and_Boxes():
             # Player 1 wins
             text = 'Winner: Player 1 '
             color = player1_color
+            self.player1_win = True
         elif player2_score > player1_score:
             text = 'Winner: Player 2 '
             color = player2_color
         else:
             text = 'Its a tie'
             color = 'gray'
+            self.draw = True
         
         print("BOARD STATUS")
         for i in range(self.board_status.shape[0]):
@@ -314,6 +318,8 @@ class Dots_and_Boxes():
                 self.turn()
 
     def turn(self):
+        input()
+
         current_bot = self.bot1 if self.player1_turn else self.bot2
         if current_bot is None:
             self.window.bind(LEFT_CLICK, self.click)
@@ -330,8 +336,7 @@ class Dots_and_Boxes():
         actionnow1 = self.player1_turn
         self.update(action.action_type, action.position)
         if (actionnow1):
-            print("hehe: ", end="")
-            print(action.position)
+            print("hehe: ", action.position, action.action_type)
 
 if __name__ == "__main__":
     """
