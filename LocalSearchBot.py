@@ -29,7 +29,7 @@ class LocalSearchBot(Bot):
             temp[locX, locY] = -1
 
         # Mencari Chain
-        still_search_chain = True
+        still_search_chain = np.any(temp == 0)
         while (still_search_chain):
             is_loop = False
             loc_zero = np.argwhere(temp == 0)[0]
