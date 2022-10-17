@@ -84,16 +84,23 @@ class LocalSearchBot(Bot):
     
     def objective_function(self, state: GameState):
         f = 0
-        # chain, loop = self.get_num_chain_loop(state)
-        # if (loop != 0 and chain == 0):
-        #     f = 0
-        # else:
-        #     if (chain % 2 == 0):
-        #         f = 1
-        #     else:
-        #         f = -1
+        chain, loop = self.get_num_chain_loop(state)
         
-        # f*=chain
+        if (loop != 0 and chain == 0):
+            f = 0
+        else:
+            if (chain % 2 == 1):
+                if (state.player1_turn):
+                    f = -1
+                else:
+                    f = 1
+            else:
+                if (state.player1_turn):
+                    f = 1
+                else:
+                    f = -1
+        
+        f*=chain
 
         #playerModifier
         if state.player1_turn:
@@ -197,8 +204,7 @@ class LocalSearchBot(Bot):
         best_coord = [0, 0]
         best_move = "no_bestmove"
 
-        # best_f = self.objective_function(state)
-        best_f = -999
+        best_f = self.objective_function(state)
         for x, y in unmarked_row:
             # temp_state = GameState(
             #     state.board_status.copy(),
