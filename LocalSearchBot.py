@@ -15,10 +15,8 @@ class LocalSearchBot(Bot):
 
         # Saat masih pertama, bebas mau generate row atau col
         if (len(all_row_marked) + len(all_col_marked) <= 1):
-            print("random")
             return self.get_random_action(state)
         else:
-            print("localsearch")
             return self.get_action_local_search(state)
 
     def get_num_chain_loop(self, state: GameState):
@@ -109,7 +107,7 @@ class LocalSearchBot(Bot):
             mult = 1
         sisi4 = np.argwhere(state.board_status == mult*4)
         sisi3 = np.argwhere(abs(state.board_status) == 3)
-        print(sisi4,sisi3)
+        
         # Tidak ada terbentuk 4 sisi namun terbentuk 3 sisi
         if len(sisi4) == 0 and len(sisi3) > 0:
             f -= len(sisi3)
@@ -194,7 +192,8 @@ class LocalSearchBot(Bot):
             return state_copy.player1_turn, state_copy
         else:
             #state_copy.player1_turn = not state_copy.player1_turn
-            return not state_copy.player1_turn, GameState(board_status=state_copy.board_status,row_status=state_copy.row_status,col_status=state_copy.col_status,player1_turn=not state_copy.player1_turn)#state_copy
+            return not state_copy.player1_turn, GameState(board_status=state_copy.board_status,row_status=state_copy.row_status,
+                                            col_status=state_copy.col_status,player1_turn=not state_copy.player1_turn)#state_copy
 
     def get_action_local_search(self, state: GameState) -> GameAction:
         unmarked_row = np.argwhere(state.row_status == 0)
@@ -206,12 +205,6 @@ class LocalSearchBot(Bot):
 
         best_f = self.objective_function(state)
         for x, y in unmarked_row:
-            # temp_state = GameState(
-            #     state.board_status.copy(),
-            #     state.row_status.copy(),
-            #     state.col_status.copy(),
-            #     state.player1_turn
-            # )
             next_turn, state_copy = self.get_next_turn(state, GameAction('row', (x,y)))
             f = self.objective_function(state_copy)
             if (f > best_f):
@@ -222,13 +215,6 @@ class LocalSearchBot(Bot):
             print(state_copy.board_status, f, "row", x,y)
 
         for x, y in unmarked_col:
-            # temp_state = GameState(
-            #     state.board_status.copy(),
-            #     state.row_status.copy(),
-            #     state.col_status.copy(),
-            #     state.player1_turn
-            # )
-            # temp_state.col_status[x, y] = 1
             next_turn, state_copy = self.get_next_turn(state, GameAction('col', (x,y)))
             
             f = self.objective_function(state_copy)
@@ -241,8 +227,6 @@ class LocalSearchBot(Bot):
 
         if best_move == "no_bestmove":
             # Generate random move
-            print("No bestmove")
             return self.get_random_action(state)
 
-        print("best move", best_move, [best_coord[1], best_coord[0]])
         return GameAction(best_move, [best_coord[1], best_coord[0]])
