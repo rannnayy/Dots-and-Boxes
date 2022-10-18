@@ -8,11 +8,11 @@ import numpy as np
 from typing import Optional
 from Bot import Bot
 from GameState import GameState
-from MinimaxBot import MinimaxBot
 
 # * Import your bot
 from RandomBot import RandomBot
 from LocalSearchBot import LocalSearchBot
+from MinimaxBot import MinimaxBot
 
 size_of_board = 600
 number_of_dots = 4
@@ -41,8 +41,6 @@ class Dots_and_Boxes():
         self.canvas = Canvas(self.window, width=size_of_board, height=size_of_board)
         self.canvas.pack()
         self.player1_starts = True
-        self.player1_win = False
-        self.draw = False
         self.refresh_board()
 
         self.bot1 = bot1
@@ -133,16 +131,14 @@ class Dots_and_Boxes():
         if self.player1_turn:
             playerModifier = -1
             
+
         if y < (number_of_dots-1) and x < (number_of_dots-1):
             self.board_status[y][x] = (abs(self.board_status[y][x]) + val) * playerModifier
             if abs(self.board_status[y][x]) == 4:
                 self.pointScored()
 
         if type == 'row':
-            if (self.player1_turn):
-                self.row_status[y][x] = 1
-            elif (not self.player1_turn):
-                self.row_status[y][x] = 1
+            self.row_status[y][x] = 1
             if y >= 1:
                 self.board_status[y-1][x] = (abs(self.board_status[y-1][x]) + val) * playerModifier
                 if abs(self.board_status[y-1][x]) == 4:
@@ -156,7 +152,7 @@ class Dots_and_Boxes():
                     self.pointScored()
                 
     def is_gameover(self):
-        return (self.row_status != 0).all() and (self.col_status != 0).all()
+        return (self.row_status == 1).all() and (self.col_status == 1).all()
 
     # ------------------------------------------------------------------
     # Drawing Functions:
@@ -189,30 +185,12 @@ class Dots_and_Boxes():
             # Player 1 wins
             text = 'Winner: Player 1 '
             color = player1_color
-            self.player1_win = True
         elif player2_score > player1_score:
             text = 'Winner: Player 2 '
             color = player2_color
         else:
             text = 'Its a tie'
             color = 'gray'
-            self.draw = True
-        
-        print("BOARD STATUS")
-        for i in range(self.board_status.shape[0]):
-            for j in range(self.board_status.shape[1]):
-                print(self.board_status[i][j], end=" ")
-            print()
-        print("ROW STATUS")
-        for i in range(self.row_status.shape[0]):
-            for j in range(self.row_status.shape[1]):
-                print(self.row_status[i][j], end=" ")
-            print()
-        print("COL STATUS")
-        for i in range(self.col_status.shape[0]):
-            for j in range(self.col_status.shape[1]):
-                print(self.col_status[i][j], end=" ")
-            print()
 
         self.canvas.delete("all")
         self.canvas.create_text(size_of_board / 2, size_of_board / 3, font="cmr 60 bold", fill=color, text=text)
@@ -297,9 +275,6 @@ class Dots_and_Boxes():
             self.reset_board = False
 
     def update(self, valid_input, logical_position):
-        if (self.player1_turn):
-            print("valid input: ", self.player1_turn, end=" ")
-            print(valid_input)
         if valid_input and not self.is_grid_occupied(logical_position, valid_input):
             self.window.unbind(LEFT_CLICK)
             self.update_board(valid_input, logical_position)
@@ -310,8 +285,6 @@ class Dots_and_Boxes():
             self.pointsScored = False
 
             if self.is_gameover():
-                # YANG INI JANGAN LUPA DIUBAH YA JADI LANGSUNG SELESAI
-                input()
                 # self.canvas.delete("all")
                 self.display_gameover()
                 self.window.bind(LEFT_CLICK, self.click)
@@ -333,10 +306,8 @@ class Dots_and_Boxes():
             self.col_status.copy(),
             self.player1_turn
         ))
-        actionnow1 = self.player1_turn
+
         self.update(action.action_type, action.position)
-        if (actionnow1):
-            print("hehe: ", action.position, action.action_type)
 
 if __name__ == "__main__":
     """
@@ -345,5 +316,5 @@ if __name__ == "__main__":
     PvB mode: game_instance = Dots_and_Boxes(None, BotName()) or game_instance = Dots_and_Boxes(BotName(), None)
     BvB mode: game_instance = Dots_and_Boxes(BotName(), BotName())
     """
-    game_instance = Dots_and_Boxes(LocalSearchBot(),LocalSearchBot())
+    game_instance = Dots_and_Boxes(RandomBot(),LocalSearchBot())
     game_instance.mainloop()
