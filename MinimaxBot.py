@@ -86,7 +86,7 @@ class MinimaxBot(Bot):
 
 
     def minimax(self, state : GameState, isMaximize : bool, alpha : int, beta : int, depth : int) -> (int,GameAction):
-        if ((state.row_status == 1).all() and (state.col_status == 1).all()) or (depth>=3):
+        if ((state.row_status == 1).all() and (state.col_status == 1).all()) or (depth>=5):
             return (self.utility_value(state),None)
 
         MAX, MIN = 1000, -1000

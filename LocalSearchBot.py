@@ -38,7 +38,6 @@ class LocalSearchBot(Bot):
             loc_zero = np.argwhere(temp == 0)[0]
             first_el_chain = loc_zero
             
-            # print(loc_zero)
             count_len_chain = 1
             if (len(loc_zero) != 0):
                 x = loc_zero[0]
@@ -212,8 +211,6 @@ class LocalSearchBot(Bot):
                 best_coord = [x, y]
                 best_move = "row"
 
-            print(state_copy.board_status, f, "row", x,y)
-
         for x, y in unmarked_col:
             next_turn, state_copy = self.get_next_turn(state, GameAction('col', (x,y)))
             
@@ -222,8 +219,6 @@ class LocalSearchBot(Bot):
                 best_f = f
                 best_coord = [x, y]
                 best_move = "col"
-
-            print(state_copy.board_status, f, "col", x,y)
 
         if best_move == "no_bestmove":
             # Generate random move
